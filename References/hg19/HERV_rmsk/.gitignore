@@ -2,3 +2,5 @@
 */
 # Don't ignore alternate GTFs
 ! alternate/
+# Don't ignore documentation
+! docs/
