@@ -1,6 +1,6 @@
 # Ignore all subdirectories
 */
 # Don't ignore alternate GTFs
-! alternate/
+!alternate/
 # Don't ignore documentation
-! docs/
+!docs/
