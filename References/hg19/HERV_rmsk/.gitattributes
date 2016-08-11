@@ -1,2 +1,0 @@
-*.gtf filter=lfs -crlf
-*.gtf.gz filter=lfs -crlf
