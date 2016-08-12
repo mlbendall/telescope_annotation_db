@@ -77,7 +77,7 @@ filterHERVLoci.py --min_internal_pct 0.1 --reject_gtf $FAM/rejected.gtf $FAM/ass
     sortgtf.py --chrom $CHROM > $FAM/filtered.gtf
 
 ### Step 7: Resolve conflicting loci #####################################################
-cmptrks=$(sed 's/ //g' <<<$(ls -m alternate/*.gtf*))
+cmptrks=$(sed 's/ //g' <<<$(ls -m ../alternate/*.gtf*))
 # Create transcript_id attribute for IGV visualization
 transferGTFAttr.py locus transcript_id $FAM/filtered.gtf $FAM/tmp.igv.gtf
 
