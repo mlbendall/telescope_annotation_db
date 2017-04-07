@@ -15,7 +15,7 @@ CHROM=../hg19.chrom.sizes
 
 # Build annotations for each family, auto mode
 # resolve.[FAM].json must be present for families with overlapping annotations
-sed "s/$(printf '\t')/ /g" families.tsv | while read line; do
+grep -v '^#' families.tsv | sed "s/$(printf '\t')/ /g" | while read line; do
     ./build_family.sh $line auto
 done
 
