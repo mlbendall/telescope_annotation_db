@@ -10,14 +10,11 @@
 # Only allow AUTO if resolve file is found
 # [[ ! -e resolve.$FAM.json ]] && AUTO=false
 
-
-echo "Family:         $FAM"
-echo "Internal Model: $intmodel"
-echo "LTR models:     $models"
-echo "Flank size:     $FLANKSZ"
-echo "Automatic:      $AUTO"
-
-mkdir -p $FAM
+echo "Family:           $FAM"
+echo "Internal Model:   $intmodel"
+echo "LTR models:       $models"
+echo "Flank size:       $FLANKSZ"
+echo "Automatic:        $AUTO"
 
 ### Set environment variables ############################################################
 which assembleHERV.py
@@ -33,26 +30,36 @@ fi
 CHROM=../hg19.chrom.sizes
 
 ### Step 1: Download RepeatMasker tracks from UCSC #######################################
+trackdir=rmsk_tracks
+[[ ! -d $trackdir ]] && mkdir -p $trackdir
+
 # Internal model
-[[ ! -e $FAM/$intmodel.txt ]] && mysql -h genome-mysql.cse.ucsc.edu -u genome -D hg19 -A \
-    -e "SELECT * FROM rmsk WHERE repName = '$intmodel';" > $FAM/$intmodel.txt
+[[ ! -e $trackdir/$intmodel.txt ]] &&\
+  echo "  Fetching $intmodel" &&\
+  mysql -h genome-mysql.cse.ucsc.edu -u genome -D hg19 -A \
+  -e "SELECT * FROM rmsk WHERE repName = '$intmodel';" > $trackdir/$intmodel.txt
+
+wc -l $trackdir/$intmodel.txt
+[[ $(wc -l < $trackdir/$intmodel.txt) -eq 0 ]] && echo "Model $intmodel not found" && return
 
 # LTR
 for model in $models; do
-    echo "Query: $model"
-    [[ ! -e $FAM/LTR.$model.txt ]] && mysql -h genome-mysql.cse.ucsc.edu -u genome -D hg19 -A \
-        -e "SELECT * FROM rmsk WHERE repName = '$model';" > $FAM/LTR.$model.txt
+    [[ ! -e $trackdir/LTR.$model.txt ]] &&\
+      echo "  Fetching $model" &&\
+      mysql -h genome-mysql.cse.ucsc.edu -u genome -D hg19 -A \
+      -e "SELECT * FROM rmsk WHERE repName = '$model';" > $trackdir/LTR.$model.txt
+    wc -l $trackdir/LTR.$model.txt
 done
-
-wc -l $FAM/*.txt
      
 ### Step 2: Convert RepeatMasker tables to GTF ###########################################
-rmsk2gtf.py --chroms $CHROM --gene_region internal $FAM/$intmodel.txt | \
+mkdir -p $FAM
+rmsk2gtf.py --chroms $CHROM --gene_region internal $trackdir/$intmodel.txt | \
     fixRmskCoords.py | \
     sortgtf.py --chrom $CHROM > $FAM/$intmodel.gtf
 
 for model in $models; do
-    rmsk2gtf.py --chroms $CHROM --gene_region ltr $FAM/LTR.$model.txt | \
+    [[ $(wc -l < $trackdir/LTR.$model.txt) -ne 0 ]] &&\
+    rmsk2gtf.py --chroms $CHROM --gene_region ltr $trackdir/LTR.$model.txt | \
         fixRmskCoords.py | \
         sortgtf.py --chrom $CHROM > $FAM/LTR.$model.gtf
 done
