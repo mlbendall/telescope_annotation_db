@@ -32,5 +32,5 @@ grep -v '^#' families.tsv | cut -f1 | while read fam; do
 done | sortgtf.py --chroms $CHROM > HERV_rmsk.spanning.gtf
 
 # Generate the table
-[[ -e HERV_rmsk.table.tsv ]] && mv HERV_rmsk.table.tsv HERV_rmsk.table.tsv.bak
-gtf2tsv.py HERV_rmsk.spanning.gtf > HERV_rmsk.table.tsv
+[[ -e HERV_rmsk.table.tsv.gz ]] && mv HERV_rmsk.table.tsv.gz HERV_rmsk.table.tsv.gz.bak
+gtf2tsv.py HERV_rmsk.spanning.gtf | gzip > HERV_rmsk.table.tsv.gz
