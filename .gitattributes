@@ -1,2 +1,3 @@
 *.gtf filter=lfs -crlf
 *.gtf.gz filter=lfs -crlf
+*.tsv.gz filter=lfs -crlf
