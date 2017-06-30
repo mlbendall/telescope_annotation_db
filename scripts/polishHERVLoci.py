@@ -57,7 +57,7 @@ def resolve_merge(cmd, cgroup, fulllocs):
 
     newcat = 'merged*' #  % locus_category(newloc)
     for i,a in enumerate(newloc):
-        if a.strand != newstrand: a.strand = '.' # has_inversion = True
+        if a.strand != newstrand: a.strand = newstrand # has_inversion = True
         a.source = newcat #'merged'
         a.attr.update({'locus':newloc_id, 'exon_number':(i+1)})
     
