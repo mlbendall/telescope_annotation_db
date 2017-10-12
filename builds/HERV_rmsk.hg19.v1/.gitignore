@@ -4,3 +4,7 @@
 !alternate/
 # Don't ignore documentation
 !docs/
+# Don't ignore scripts
+!scripts/
+# Don't ignore python
+!python/

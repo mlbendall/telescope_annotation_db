@@ -10,56 +10,47 @@
 # Only allow AUTO if resolve file is found
 # [[ ! -e resolve.$FAM.json ]] && AUTO=false
 
-echo "Family:           $FAM"
-echo "Internal Model:   $intmodel"
-echo "LTR models:       $models"
-echo "Flank size:       $FLANKSZ"
-echo "Automatic:        $AUTO"
+
+echo "Family:         $FAM"
+echo "Internal Model: $intmodel"
+echo "LTR models:     $models"
+echo "Flank size:     $FLANKSZ"
+echo "Automatic:      $AUTO"
+
+mkdir -p $FAM
 
 ### Set environment variables ############################################################
 which assembleHERV.py
 if [[ "$?" != 0 ]]; then
     echo "Setting PATH"
     # Path to repository root
-    RROOT=$(git rev-parse --show-toplevel)
-    export PATH=$RROOT/scripts:$PATH
-    export PYTHONPATH=$RROOT/python:$PYTHONPATH
+    export PATH=$(dirname $0)/scripts:$PATH
+    export PYTHONPATH=$(dirname $0)/python:$PYTHONPATH
 fi
-
 # Chromosome index
-CHROM=../hg19.chrom.sizes
+CHROM=chrom.sizes
 
 ### Step 1: Download RepeatMasker tracks from UCSC #######################################
-trackdir=rmsk_tracks
-[[ ! -d $trackdir ]] && mkdir -p $trackdir
-
 # Internal model
-[[ ! -e $trackdir/$intmodel.txt ]] &&\
-  echo "  Fetching $intmodel" &&\
-  mysql -h genome-mysql.cse.ucsc.edu -u genome -D hg19 -A \
-  -e "SELECT * FROM rmsk WHERE repName = '$intmodel';" > $trackdir/$intmodel.txt
-
-wc -l $trackdir/$intmodel.txt
-[[ $(wc -l < $trackdir/$intmodel.txt) -eq 0 ]] && echo "Model $intmodel not found" && return
+[[ ! -e $FAM/$intmodel.txt ]] && mysql -h genome-mysql.cse.ucsc.edu -u genome -D hg19 -A \
+    -e "SELECT * FROM rmsk WHERE repName = '$intmodel';" > $FAM/$intmodel.txt
 
 # LTR
 for model in $models; do
-    [[ ! -e $trackdir/LTR.$model.txt ]] &&\
-      echo "  Fetching $model" &&\
-      mysql -h genome-mysql.cse.ucsc.edu -u genome -D hg19 -A \
-      -e "SELECT * FROM rmsk WHERE repName = '$model';" > $trackdir/LTR.$model.txt
-    wc -l $trackdir/LTR.$model.txt
+    echo "Query: $model"
+    [[ ! -e $FAM/LTR.$model.txt ]] && mysql -h genome-mysql.cse.ucsc.edu -u genome -D hg19 -A \
+        -e "SELECT * FROM rmsk WHERE repName = '$model';" > $FAM/LTR.$model.txt
 done
+
+wc -l $FAM/*.txt
      
 ### Step 2: Convert RepeatMasker tables to GTF ###########################################
-mkdir -p $FAM
-rmsk2gtf.py --chroms $CHROM --gene_region internal $trackdir/$intmodel.txt | \
+rmsk2gtf.py --chroms $CHROM --gene_region internal $FAM/$intmodel.txt | \
     fixRmskCoords.py | \
     sortgtf.py --chrom $CHROM > $FAM/$intmodel.gtf
 
 for model in $models; do
-    [[ $(wc -l < $trackdir/LTR.$model.txt) -ne 0 ]] &&\
-    rmsk2gtf.py --chroms $CHROM --gene_region ltr $trackdir/LTR.$model.txt | \
+    rmsk2gtf.py --chroms $CHROM --gene_region ltr $FAM/LTR.$model.txt | \
         fixRmskCoords.py | \
         sortgtf.py --chrom $CHROM > $FAM/LTR.$model.gtf
 done
@@ -84,7 +75,7 @@ filterHERVLoci.py --min_internal_pct 0.1 --reject_gtf $FAM/rejected.gtf $FAM/ass
     sortgtf.py --chrom $CHROM > $FAM/filtered.gtf
 
 ### Step 7: Resolve conflicting loci #####################################################
-cmptrks=$(sed 's/ //g' <<<$(ls -m ../alternate/*.gtf*))
+cmptrks=$(sed 's/ //g' <<<$(ls -m compare/*.gtf*))
 # Create transcript_id attribute for IGV visualization
 transferGTFAttr.py locus transcript_id $FAM/filtered.gtf $FAM/tmp.igv.gtf
 
@@ -116,7 +107,7 @@ else
 fi
 
 ### Step 8: Rename loci by genomic location ##############################################
-nameHERV.py --cytoband ../cytoband.gtf $FAM/polished.gtf | \
+nameHERV.py --cytoband cytoband.gtf $FAM/polished.gtf | \
     transferGTFAttr.py locus transcript_id | \
     transferGTFAttr.py locus gene_id > $FAM/$FAM.gtf
 
