@@ -3,7 +3,6 @@
 The annotation is constructed using RepeatMasker hits for 60 HERV families. In [RepBase](http://www.girinst.org/repbase/), each family is represented by one HERV internal model and one or more corresponding LTR models. This pipeline identifies HERV proviruses by grouping nearby regions that match to a single family. These regions are checked for agreement with a _relaxed_ expectation of what a provirus looks like (meaning that a provirus could be missing one or both of its LTRs). Since there is no clear rule about what qualifies as a HERV provirus, there is a great deal of manual/visual curation involved in creating an annotation; we have sought to automate this process where possible. The final output of this pipeline is a GTF annotation of HERV proviruses that can be used by other programs such as *Telescope*.
 
 
-
 ## How to build the annotation
 
 ### Setup
@@ -76,10 +75,10 @@ Combine the clustered annotations (including feature annotations and exon annota
 ```bash
 IFS=$'\t' grep -v '^#' families.tsv | while read n im lm ; do
     cat $n/$n.gtf
-done | gtftools sortclust > 
+done | gtftools sortclust > clusters.gtf
 ```
 
-Combine the feature annotations:
+Combine the feature (spanning) annotations:
 
 ```bash
 IFS=$'\t' grep -v '^#' families.tsv | while read n im lm ; do
@@ -95,3 +94,23 @@ IFS=$'\t' grep -v '^#' families.tsv | while read n im lm ; do
 done | gtftools sort > transcripts.gtf
 ```
 
+
+### Additional steps (optional)
+
+#### Compare this annotation to the previous
+
+```python
+from telebuilder.utils.gtfutils import *
+v1 = list(read_gtf_file('HERV_rmsk.hg19.v1/features.gtf'))
+v2 = list(read_gtf_file('HERV_rmsk.hg19.v2/features.gtf'))
+
+isect = intersect_gtf(v1, [v2,], False)
+for gA, gBs in isect:
+    locA = gA.attr['locus']
+    if not gBs:
+        print "Not found: {}".format(gA)
+    else:
+        locBs = set(gB.attr['locus'] for i,gB in gBs)
+        if locA not in locBs:
+            print "locus in A: {}\tlocus in B: {}".format(locA, ','.join(sorted(locBs)))
+```
