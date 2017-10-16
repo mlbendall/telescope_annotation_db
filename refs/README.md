@@ -34,8 +34,6 @@ Sort the GTF according to our order above.
 
 ```
 
-### TODO: include how to obtain other references used for comparison
-
 Clean up:
 
 ```
@@ -88,4 +86,42 @@ Clean up:
 
 ```
 rm -f hg38_cyto.gtf hg38.chrom.sizes
+```
+
+
+## Other annotations
+
+Included are other annotations of transposable elements from the literature.
+
+
+#### HERVK(HML-2)
+
++ **hg19.subramanianT1.gtf**
++ **hg19.subramanianT2.gtf** 
+
+
+The locations of HERVK(HML-2) loci are described in tables 1 and 2 from:
+
+> Subramanian RP, Wildschutte JH, Russo C, Coffin JM. 2011. Identification, characterization, and comparative genomic distribution of the HERV-K (HML-2) group of human endogenous retroviruses. Retrovirology 8: 90.
+
+#### HERVW
+
++ **hg19.grandiS1.gtf**
+
+The locations of HERVW loci are described in table S1 from:
+
+>Grandi N, Cadeddu M, Blomberg J, Tramontano E. 2016. Contribution of type W human endogenous retroviruses to the human genome: characterization of HERV-W proviral insertions and processed pseudogenes. Retrovirology 13: 67.
+
+
+#### liftOver
+
+Convert hg19 annotations to hg38 coordinates using liftOver:
+
+```bash
+wget http://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/liftOver
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz
+chmod a+x liftOver
+./liftOver -gff hg19.subramanianT1.gtf hg19ToHg38.over.chain.gz hg38.subramanianT1.gtf unMapped
+./liftOver -gff hg19.subramanianT2.gtf hg19ToHg38.over.chain.gz hg38.subramanianT2.gtf unMapped
+./liftOver -gff hg19.grandiS1.gtf hg19ToHg38.over.chain.gz hg38.grandiS1.gtf unMapped
 ```
