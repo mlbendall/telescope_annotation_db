@@ -26,9 +26,9 @@ Finally, `buildERV` will search the `compare` directory for other annotations us
 
 ```bash
 mkdir -p compare
-ln -s ../../../refs/hg19.subramanianT1.gtf compare/hg19.subramanianT1.gtf
-ln -s ../../../refs/hg19.subramanianT2.gtf compare/hg19.subramanianT2.gtf
-ln -s ../../../refs/hg19.grandiS1.gtf compare/hg19.grandiS1.gtf
+ln -s ../../../refs/hg38.subramanianT1.gtf compare/hg38.subramanianT1.gtf
+ln -s ../../../refs/hg38.subramanianT2.gtf compare/hg38.subramanianT2.gtf
+ln -s ../../../refs/hg38.grandiS1.gtf compare/hg38.grandiS1.gtf
 ```
 
 ### Build HERV family annotations
