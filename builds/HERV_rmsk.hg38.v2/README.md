@@ -1,9 +1,37 @@
 # HERV_rmsk.hg38.v2
 
-The annotation is constructed using RepeatMasker hits for 60 HERV families. In [RepBase](http://www.girinst.org/repbase/), each family is represented by one HERV internal model and one or more corresponding LTR models. This pipeline identifies HERV proviruses by grouping nearby regions that match to a single family. These regions are checked for agreement with a _relaxed_ expectation of what a provirus looks like (meaning that a provirus could be missing one or both of its LTRs). Since there is no clear rule about what qualifies as a HERV provirus, there is a great deal of manual/visual curation involved in creating an annotation; we have sought to automate this process where possible. The final output of this pipeline is a GTF annotation of HERV proviruses that can be used by other programs such as *Telescope*.
+The annotation is constructed using RepeatMasker hits for 60 HERV families. See [`families.tsv`](./families.tsv) for table of families, internal models, and LTR models.
+
+## Quick Start:
+
+### HERV annotation: [transcripts.gtf](https://github.com/mlbendall/telescope_annotation_db/raw/master/builds/HERV_rmsk.hg38.v2/transcripts.gtf)
+
+<sup> This annotation includes only genomic regions that are matched by RepeatMasker. Thus, a single transcript may be discontinuous and represented by multiple rows. We recommend using this annotation for running *Telescope*. </sup>
+
+### HERV loci: [genes.gtf](https://github.com/mlbendall/telescope_annotation_db/raw/master/builds/HERV_rmsk.hg38.v2/genes.gtf)
+
+<sup> Annotates entire genomic region spanning HERV locus. A single transcriptional unit is represented by one row, and may contain regions that are not matched by RepeatMasker.</sup>
 
 
-## How to build the annotation
+#### Load annotation into UCSC genome browser:
+
+1.  Navigate to [UCSC Genome Browser on Human hg38 Assembly](http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38).
+2. Go to **My Data > Custom tracks**.
+3. Paste this into the first box:
+
+
+    ```
+    track name='Telescope.v2' description='Telescope Annotation'
+    https://github.com/mlbendall/telescope_annotation_db/raw/master/builds/HERV_rmsk.hg38.v2/transcripts.gtf
+    ```
+
+4. Click "Submit" to load the track into your browser session. 
+
+-----
+
+## Building the annotation
+
+In [RepBase](http://www.girinst.org/repbase/), each family is represented by one HERV internal model and one or more corresponding LTR models. This pipeline identifies HERV proviruses by grouping nearby regions that match to a single family. These regions are checked for agreement with a _relaxed_ expectation of what a provirus looks like (meaning that a provirus could be missing one or both of its LTRs). Since there is no clear rule about what qualifies as a HERV provirus, there is manual/visual curation involved in creating an annotation; we have sought to automate this process where possible. The final output of this pipeline is a GTF annotation of HERV proviruses that can be used by other programs such as *Telescope*.
 
 ### Setup
 
@@ -70,26 +98,18 @@ done
 
 ### Combine GTFs
 
-Combine the clustered annotations (including feature annotations and exon annotations):
+Combine annotations for all families:
 
 ```bash
 IFS=$'\t' grep -v '^#' families.tsv | while read n im lm ; do
     cat $n/$n.gtf
-done | gtftools sortclust > clusters.gtf
+done | gtftools sortclust > transcripts.gtf
 ```
 
-Combine the feature (spanning) annotations:
+Create an annotation with only the spanning gene coordinates:
 
 ```bash
 IFS=$'\t' grep -v '^#' families.tsv | while read n im lm ; do
-    perl -lane 'print if $F[2]=~/span/' $n/$n.gtf
-done | gtftools sort > features.gtf
-```
-
-Combine the transcript annotations:
-
-```bash
-IFS=$'\t' grep -v '^#' families.tsv | while read n im lm ; do
-    perl -lane 'print if $F[2]=~/exon/' $n/$n.gtf
-done | gtftools sort > transcripts.gtf
+    perl -lane 'print if $F[2]=~/gene/' $n/$n.gtf
+done | gtftools sort > genes.gtf
 ```
