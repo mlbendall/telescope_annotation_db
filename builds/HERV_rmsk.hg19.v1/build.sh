@@ -25,4 +25,4 @@ done | sortgtf.py --chroms $CHROM > transcripts.gtf
 # Generate the spanning annotation
 cut -f1 families.tsv | while read fam; do 
     perl -lane 'print unless $F[2]!~/^span/' $fam/$fam.gtf
-done | sortgtf.py --chroms $CHROM > features.gtf
+done | sortgtf.py --chroms $CHROM | sed 's/span/gene/' > genes.gtf

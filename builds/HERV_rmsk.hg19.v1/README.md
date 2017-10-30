@@ -2,6 +2,32 @@
 
 The annotation is constructed using RepeatMasker hits for 23 HERV families. See `families.tsv` for table of families, internal models, and LTR models.
 
+## Quick Start:
+
+### HERV annotation: [transcripts.gtf](https://github.com/mlbendall/telescope_annotation_db/raw/master/builds/HERV_rmsk.hg19.v1/transcripts.gtf)
+
+<sup> This annotation includes only genomic regions that are matched by RepeatMasker. Thus, a single transcript may be discontinuous and represented by multiple rows. We recommend using this annotation for running *Telescope*. </sup>
+
+### HERV loci: [genes.gtf](https://github.com/mlbendall/telescope_annotation_db/raw/master/builds/HERV_rmsk.hg19.v1/genes.gtf)
+
+<sup> Annotates entire genomic region spanning HERV locus. A single transcriptional unit is represented by one row, and may contain regions that are not matched by RepeatMasker.</sup>
+
+
+#### Load annotation into UCSC genome browser:
+
+1.  Navigate to [UCSC Genome Browser on Human hg19 Assembly](http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19).
+2. Go to **My Data > Custom tracks**.
+3. Paste this into the first box:
+
+
+    ```
+    track name='Telescope.v1' description='Telescope Annotation'
+    https://github.com/mlbendall/telescope_annotation_db/raw/master/builds/HERV_rmsk.hg19.v1/transcripts.gtf
+    ```
+
+4. Click "Submit" to load the track into your browser session. 
+
+
 ## How to build the annotation
 
 The main scripts for building this annotation are `build_family.sh` and `build.sh`. Additional scripts used by `build_family.sh` are contained within the `scripts/` and `python/` directories.
@@ -27,12 +53,6 @@ The `build.sh` script parses the family table, calls `build_family.sh` for each 
 ```bash
 /bin/bash build.sh
 ```
-
-##### Output:
-
-+ `transcripts.gtf` Contains RepeatMasker hits grouped by `locus` tag. Use this annotation in **Telescope**.
-+ `features.gtf` Contains one annotation record for each locus spanning all hits.
-
 
 ## Legacy annotation
 
