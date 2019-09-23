@@ -1,4 +1,4 @@
-# HERV_rmsk.hg38.v2
+# [HERV_rmsk.hg38.v2](http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&hgct_customText=track%20name=Telescope.v2%20description=%27Telescope%20Annotation%27%0Ahttps://github.com/mlbendall/telescope_annotation_db/raw/master/builds/HERV_rmsk.hg38.v2/transcripts.gtf)
 
 The annotation is constructed using RepeatMasker hits for 60 HERV families. See [`families.tsv`](./families.tsv) for table of families, internal models, and LTR models.
 
@@ -15,17 +15,7 @@ The annotation is constructed using RepeatMasker hits for 60 HERV families. See 
 
 #### Load annotation into UCSC genome browser:
 
-1.  Navigate to [UCSC Genome Browser on Human hg38 Assembly](http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38).
-2. Go to **My Data > Custom tracks**.
-3. Paste this into the first box:
-
-
-    ```
-    track name='Telescope.v2' description='Telescope Annotation'
-    https://github.com/mlbendall/telescope_annotation_db/raw/master/builds/HERV_rmsk.hg38.v2/transcripts.gtf
-    ```
-
-4. Click "Submit" to load the track into your browser session. 
+Click here: [HERV_rmsk.hg38.v2](http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&hgct_customText=track%20name=Telescope.v2%20description=%27Telescope%20Annotation%27%0Ahttps://github.com/mlbendall/telescope_annotation_db/raw/master/builds/HERV_rmsk.hg38.v2/transcripts.gtf)
 
 -----
 
