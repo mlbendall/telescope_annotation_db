@@ -1,4 +1,4 @@
-# [HERV_rmsk.hg38.v2](http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&hgct_customText=track%20name=Telescope.v2%20description=%27Telescope%20Annotation%27%0Ahttps://github.com/mlbendall/telescope_annotation_db/raw/master/builds/HERV_rmsk.hg38.v2/transcripts.gtf)
+# [HERV_rmsk.hg38.v2](http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&hgct_customText=track%20name=HERV_rmsk.hg38.v2%20description=%27HERV_rmsk.hg38.v2%27%0Ahttps://github.com/mlbendall/telescope_annotation_db/raw/master/builds/HERV_rmsk.hg38.v2/transcripts.gtf)
 
 The annotation is constructed using RepeatMasker hits for 60 HERV families. See [`families.tsv`](./families.tsv) for table of families, internal models, and LTR models.
 
@@ -15,7 +15,7 @@ The annotation is constructed using RepeatMasker hits for 60 HERV families. See 
 
 #### Load annotation into UCSC genome browser:
 
-Click here: [HERV_rmsk.hg38.v2](http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&hgct_customText=track%20name=Telescope.v2%20description=%27Telescope%20Annotation%27%0Ahttps://github.com/mlbendall/telescope_annotation_db/raw/master/builds/HERV_rmsk.hg38.v2/transcripts.gtf)
+Click here: [HERV_rmsk.hg38.v2](http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&hgct_customText=track%20name=HERV_rmsk.hg38.v2%20description=%27HERV_rmsk.hg38.v2%27%0Ahttps://github.com/mlbendall/telescope_annotation_db/raw/master/builds/HERV_rmsk.hg38.v2/transcripts.gtf)
 
 -----
 
@@ -102,4 +102,12 @@ Create an annotation with only the spanning gene coordinates:
 IFS=$'\t' grep -v '^#' families.tsv | while read n im lm ; do
     perl -lane 'print if $F[2]=~/gene/' $n/$n.gtf
 done | gtftools sort > genes.gtf
+```
+
+### Locus-level summary
+
+Data in TSV format, convenient for loading in R
+
+```
+gtftools tsv transcripts.gtf | gzip > genes.tsv.gz
 ```

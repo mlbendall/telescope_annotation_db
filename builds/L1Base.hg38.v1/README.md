@@ -1,4 +1,5 @@
-# L1Base.hg38.v1
+# [L1Base.hg38.v1](http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&hgct_customText=track%20name=L1Base.hg38.v1%20description=%27L1Base.hg38.v1%27%0Ahttps://github.com/mlbendall/telescope_annotation_db/raw/master/builds/L1Base.hg38.v1/transcripts.gtf)
+
 
 Annotations of putatively active LINE-1 elements from [L1Base](http://l1base.charite.de/).
 
@@ -10,17 +11,7 @@ Annotations of putatively active LINE-1 elements from [L1Base](http://l1base.cha
 
 #### Load annotation into UCSC genome browser:
 
-1.  Navigate to [UCSC Genome Browser on Human hg38 Assembly](http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38).
-2. Go to **My Data > Custom tracks**.
-3. Paste this into the first box:
-
-
-    ```
-    track name='L1Base.v1' description='LINE1 Annotation'
-    https://github.com/mlbendall/telescope_annotation_db/raw/master/builds/L1Base.hg38.v1/transcripts.gtf
-    ```
-
-4. Click "Submit" to load the track into your browser session. 
+Click here: [L1Base.hg38.v1](http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&hgct_customText=track%20name=L1Base.hg38.v1%20description=%27L1Base.hg38.v1%27%0Ahttps://github.com/mlbendall/telescope_annotation_db/raw/master/builds/L1Base.hg38.v1/transcripts.gtf)
 
 -----
 
@@ -69,4 +60,12 @@ Combine all GTFs into one annotation file:
 
 ```bash
 cat L1FLI.gtf L1ORF2.gtf L1FLnI.gtf | gtftools sort > transcripts.gtf
+```
+
+### Locus-level summary
+
+Data in TSV format, convenient for loading in R
+
+```
+gtftools tsv --feat exon transcripts.gtf | gzip > genes.tsv.gz
 ```
